@@ -9,7 +9,7 @@ export const fetchTasks = async () => {
   };
 
 export const createTask = async (task) => {
-    console.log(task);
+    try {
     const response = await fetch('http://localhost:9000/api/tasks', {
       method: 'POST',
       headers: {
@@ -18,10 +18,14 @@ export const createTask = async (task) => {
       body: JSON.stringify(task),
     });
     if (!response.ok) {
-      throw new Error('Network response was not ok');
+      const errorData = await response.json();
+      throw new Error(`Network response was not ok, ${errorData.message}`);
     }
     return response.json();
-  };
+  } catch (error) {
+    throw error;
+  }
+}
 
 export const updateTask = async ({ id, completed }) => {
     const response = await fetch(`http://localhost:9000/api/tasks/${id}`, {
